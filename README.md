@@ -14,6 +14,7 @@ Use this function to create a test target. The target may include as many GTest 
 
 Options:
   - `NO_EXE`: do not create an executable for this test
+  - `EXCLUDE_FROM_ALL`: exclude this target from target "all"
   
 Arguments:
   - `SOURCES`: list of the tests source files. You should use absolute paths here
@@ -31,6 +32,9 @@ Example:
 ### `create_test_suite`
 
 Use this function to create a test suite target from several test targets. Unfortunately, it's currently not possible to combine test suites.
+
+Options:
+  - `EXCLUDE_FROM_ALL`: exclude this target from target "all"
 
 Arguments:
   - `FROM`: list of test targets that will make the test suite
