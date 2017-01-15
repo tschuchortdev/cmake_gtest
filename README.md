@@ -27,3 +27,24 @@ Example:
             SOURCES "~/myproject/test1.c" "~/myproject/test2.c"
             DEPENDS libtarget1 libtarget2)
             
+
+### `create_test_suite`
+
+Use this function to create a test suite target from several test targets. Unfortunately, it's currently not possible to combine test suites.
+
+Arguments:
+  - `FROM`: list of test targets that will make the test suite
+  
+Example:
+
+    create_test_suite(
+            my_test_suite_target
+            FROM my_test_target1 my_test_target2)
+            
+you can find a list of all test targets that you have created in `${CMAKE_PROJECT_NAME}_all_tests`:
+
+    create_test_suite(
+            all_tests
+            FROM "${${CMAKE_PROJECT_NAME}_all_tests}")
+            
+            
