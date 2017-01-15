@@ -6,6 +6,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/external/uc
 
 include(DownloadProject)
 include(Ucm)
+include(CTest)
+enable_testing()
 
 ucm_add_flags("-D_EMULATE_GLIBC=0")
 
