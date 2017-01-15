@@ -41,10 +41,15 @@ Example:
             my_test_suite_target
             FROM my_test_target1 my_test_target2)
             
-you can find a list of all test targets that you have created in `${CMAKE_PROJECT_NAME}_all_tests`:
+You can find a list of all test targets that you have created in `${CMAKE_PROJECT_NAME}_all_tests`:
 
     create_test_suite(
             all_tests
             FROM "${${CMAKE_PROJECT_NAME}_all_tests}")
             
             
+            
+            
+# WARNING:
+
+If you instruct ctest to run all targets, some tests may be run multiple times. For example if you have tests targets that are included in more than one test suite, or you create executables for test targets that are in a test suite by not specifying `NO_EXE`. It is therefore recommended to create a test suite all_tests and run that instead.
