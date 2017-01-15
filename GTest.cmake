@@ -5,7 +5,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/external/Do
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/external/ucm/cmake)
 
 include(DownloadProject)
-include(Ucm)
+include(ucm)
 include(CTest)
 enable_testing()
 
