@@ -98,7 +98,7 @@ function(create_test)
 
     set_target_properties(${name} PROPERTIES DEPENDENCIES "${dependencies}")
 
-    if(NOT NO_EXE)
+    if(NOT ARGS_NO_EXE)
         add_executable(run_${name} EXCLUDE_FROM_ALL $<TARGET_OBJECTS:${name}>)
         target_link_libraries(run_${name} PRIVATE ${dependencies} gtest_main)
         add_test(NAME ${name} COMMAND run_${name})
