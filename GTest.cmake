@@ -3,10 +3,12 @@
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/external/DownloadProject)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/external/ucm/cmake)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/external/cmake_utils)
 
 include(DownloadProject)
 include(ucm)
 include(CTest)
+include(Utils)
 enable_testing()
 
 ucm_add_flags("-D_EMULATE_GLIBC=0")
@@ -70,7 +72,6 @@ function(create_test)
             ${ARGN}                                     # arguments of the function to parse, here we take the all original ones
     ) # remaining unparsed arguments can be found in ARGS_UNPARSED_ARGUMENTS
 
-
     set(dependencies ${ARGS_DEPENDS})
 
     list(LENGTH ARGS_UNPARSED_ARGUMENTS other_args_size)
@@ -90,60 +91,34 @@ function(create_test)
         set(EXCLUDE_FROM_ALL "EXCLUDE_FROM_ALL")
     endif()
 
-    add_library(${name} OBJECT ${EXCLUDE_FROM_ALL} ${sources})
+    add_library(${name} OBJECT ${sources} ${EXCLUDE_FROM_ALL})
+    target_link_dependencies(${name} PUBLIC ${dependencies} gtest)
+
     set(${CMAKE_PROJECT_NAME}_all_tests "${${CMAKE_PROJECT_NAME}_all_tests};${name}" CACHE STRING "" FORCE)
 
-    #set(dependencies "${dependencies};gtest")
-    list(APPEND dependencies gtest)
-
-    foreach(dependency ${dependencies})
-        target_include_directories(${name} PRIVATE $<TARGET_PROPERTY:${dependency},INTERFACE_INCLUDE_DIRECTORIES>)
-        target_compile_definitions(${name} PRIVATE $<TARGET_PROPERTY:${dependency},INTERFACE_COMPILE_DEFINITIONS>)
-        target_compile_options(${name} PRIVATE $<TARGET_PROPERTY:${dependency},INTERFACE_COMPILE_OPTIONS>)
-    endforeach()
-
-    set_target_properties(${name} PROPERTIES DEPENDENCIES "${dependencies}")
-
     if(NOT ARGS_NO_EXE)
-        add_executable(run_${name} ${EXCLUDE_FROM_ALL} $<TARGET_OBJECTS:${name}>)
-        target_link_libraries(run_${name} PRIVATE ${dependencies} gtest_main)
+        add_executable(run_${name} "" ${EXCLUDE_FROM_ALL})
+        target_link_dependencies(run_${name} ${name} gtest_main)
         add_test(NAME ${name} COMMAND run_${name})
     endif()
 endfunction()
 
-function(create_test_suite)
+function(create_test_suite name)
     cmake_parse_arguments(
             ARGS                                        # prefix of output variables
             "EXCLUDE_FROM_ALL"  # list of names of the boolean arguments (only defined ones will be true)
             ""                                          # list of names of mono-valued arguments
-            "FROM"                           # list of names of multi-valued arguments (output variables are lists)
+            ""                           # list of names of multi-valued arguments (output variables are lists)
             ${ARGN}                                     # arguments of the function to parse, here we take the all original ones
     ) # remaining unparsed arguments can be found in ARGS_UNPARSED_ARGUMENTS
-
-    list(LENGTH ARGS_UNPARSED_ARGUMENTS other_args_size)
-    if(other_args_size EQUAL 1)
-        set(name ${ARGS_UNPARSED_ARGUMENTS})
-    else()
-        message(FATAL_ERROR "too many or not enough unnamed arguments")
-    endif()
-
-    if(ARGS_FROM)
-        set(tests ${ARGS_FROM})
-    else()
-        message(FATAL_ERROR "you have to pass at least one test target to create_test_suite()")
-    endif()
 
     if(ARGS_EXCLUDE_FROM_ALL)
         set(EXCLUDE_FROM_ALL "EXCLUDE_FROM_ALL")
     endif()
 
-    add_executable(${name} ${EXCLUDE_FROM_ALL} "")
+    set(tests_in_suite ${ARGS_UNPARSED_ARGUMENTS} CACHE STRING "" FORCE)
 
-    foreach(test ${tests})
-        target_sources(${name} PRIVATE $<TARGET_OBJECTS:${test}>)
-        target_link_libraries(${name} PRIVATE $<TARGET_PROPERTY:${test},DEPENDENCIES>)
-    endforeach()
-
-    target_link_libraries(${name} PRIVATE gtest_main)
+    add_executable(${name} "" ${EXCLUDE_FROM_ALL})
+    target_link_dependencies(${name} PUBLIC ${tests_in_suite} PRIVATE gtest_main)
     add_test(NAME ${name} COMMAND ${name})
 endfunction()
