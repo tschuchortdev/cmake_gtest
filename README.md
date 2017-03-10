@@ -31,7 +31,7 @@ Example:
 
 ### `create_test_suite`
 
-Use this function to create a test suite target from several test targets. Unfortunately, it's currently not possible to combine test suites.
+Use this function to create a test suite target from several test targets. It is even possible to combine other test suite targets into a new test suite, much like you can combine regular library targets in CMake.
 
 Options:
   - `EXCLUDE_FROM_ALL`: exclude this target from target "all"
@@ -43,13 +43,13 @@ Example:
 
     create_test_suite(
             my_test_suite_target
-            FROM my_test_target1 my_test_target2)
+            my_test_target1 my_test_target2)
             
 You can find a list of all test targets that you have created in `${CMAKE_PROJECT_NAME}_all_tests`:
 
     create_test_suite(
             all_tests
-            FROM "${${CMAKE_PROJECT_NAME}_all_tests}")
+            "${${CMAKE_PROJECT_NAME}_all_tests}")
             
             
             
