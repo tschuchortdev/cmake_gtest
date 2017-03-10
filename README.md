@@ -17,6 +17,7 @@ Options:
   - `EXCLUDE_FROM_ALL`: exclude this target from target "all"
   
 Arguments:
+  - target name
   - `SOURCES`: list of the tests source files. You should use absolute paths here
   - `DEPENDS`: list of targets (libraries) that this target depends on
   
@@ -37,7 +38,8 @@ Options:
   - `EXCLUDE_FROM_ALL`: exclude this target from target "all"
 
 Arguments:
-  - `FROM`: list of test targets that will make the test suite
+  - target name
+  - list of test targets that will make the test suite
   
 Example:
 
@@ -51,9 +53,7 @@ You can find a list of all test targets that you have created in `${CMAKE_PROJEC
             all_tests
             "${${CMAKE_PROJECT_NAME}_all_tests}")
             
-            
-            
-            
+       
 # WARNING:
 
 If you instruct ctest to run all targets, some tests may be run multiple times. For example if you have tests targets that are included in more than one test suite, or you create executables for test targets that are in a test suite by not specifying `NO_EXE`. It is therefore recommended to create a test suite all_tests and run that instead.
