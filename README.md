@@ -1,5 +1,7 @@
 # CMake GTest
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/tschuchortdev/cmake_gtest/issues)
+
 CMake module to automatically add and configure GTest
 
 ## Installation:
