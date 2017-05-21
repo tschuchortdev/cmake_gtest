@@ -2,16 +2,12 @@
 # build for windows+mingw
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/external/DownloadProject)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/external/ucm/cmake)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/external/cmake_utils)
 
 include(DownloadProject)
-include(ucm)
 include(CTest)
 include(Utils)
 enable_testing()
-
-ucm_add_flags("-D_EMULATE_GLIBC=0")
 
 if(gtest_already_downloaded)
     message(WARNING "gtest included more than once")
@@ -23,6 +19,11 @@ download_project(
         GIT_TAG         a2b8a8e # I'd love to use a release but the last release doesn't work with MinGW
         TIMEOUT         10
 )
+
+if(MINGW)
+    # https://github.com/google/googletest/issues/920
+    add_definitions("-D_EMULATE_GLIBC=0")
+endif()
 
 # Prevent GoogleTest from overriding our compiler/linker options
 # when building with Visual Studio
@@ -46,7 +47,7 @@ if(MSVC)
     # VS2012 doesn't support variadic templates, so we have to tell gtest not to use them
     if(compiler_is_vs2012)
         message(STATUS "VS2012 (toolset v110) detected. Disabling variadic templates in gtest")
-        ucm_add_flags("-DGTEST_HAS_TR1_TUPLE=0")
+        add_definitions("-DGTEST_HAS_TR1_TUPLE=0")
     endif()
 
 endif()

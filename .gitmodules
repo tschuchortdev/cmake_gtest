@@ -1,6 +1,3 @@
-[submodule "external/ucm"]
-	path = external/ucm
-	url = https://github.com/tschuchortdev/ucm
 [submodule "external/DownloadProject"]
 	path = external/DownloadProject
 	url = https://github.com/tschuchortdev/DownloadProject
