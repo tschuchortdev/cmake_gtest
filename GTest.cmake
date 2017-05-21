@@ -9,16 +9,16 @@ include(CTest)
 include(Utils)
 enable_testing()
 
-if(gtest_already_downloaded)
-    message(WARNING "gtest included more than once")
-endif()
+if(NOT gtest_already_downloaded)
+    download_project(
+            PROJ            gtest
+            GIT_REPOSITORY  https://github.com/google/googletest.git
+            GIT_TAG         a2b8a8e # I'd love to use a release but the last release doesn't work with MinGW
+            TIMEOUT         10
+    )
 
-download_project(
-        PROJ            gtest
-        GIT_REPOSITORY  https://github.com/google/googletest.git
-        GIT_TAG         a2b8a8e # I'd love to use a release but the last release doesn't work with MinGW
-        TIMEOUT         10
-)
+    set(gtest_already_downloaded TRUE CACHE STRING "" FORCE)
+endif()
 
 if(MINGW)
     # https://github.com/google/googletest/issues/920
@@ -61,8 +61,6 @@ add_subdirectory(${gtest_SOURCE_DIR} ${gtest_BINARY_DIR} EXCLUDE_FROM_ALL)
 if (CMAKE_VERSION VERSION_LESS 2.8.11)
     include_directories("${gtest_SOURCE_DIR}/include" "${gmock_SOURCE_DIR}/include")
 endif()
-
-set(gtest_already_downloaded TRUE CACHE STRING "" FORCE)
 
 function(create_test)
     cmake_parse_arguments(
