@@ -11,10 +11,11 @@ enable_testing()
 
 if(NOT gtest_already_downloaded)
     download_project(
-            PROJ            gtest
+            PROJ            googletest
             GIT_REPOSITORY  https://github.com/google/googletest.git
-            GIT_TAG         a2b8a8e # I'd love to use a release but the last release doesn't work with MinGW
+            GIT_TAG         42bc671
             TIMEOUT         10
+            ${UPDATE_DISCONNECTED_IF_AVAILABLE}
     )
 
     set(gtest_already_downloaded TRUE CACHE STRING "" FORCE)
@@ -54,7 +55,7 @@ endif()
 
 # add gtest so we can use it's targets. EXCLUDE_FROM_ALL hides targets, except
 # those that are dependencies of our own targets
-add_subdirectory(${gtest_SOURCE_DIR} ${gtest_BINARY_DIR} EXCLUDE_FROM_ALL)
+add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR} EXCLUDE_FROM_ALL)
 
 
 # in all CMake versions befor 2.8.11, header depencencies have to be added manually
@@ -91,13 +92,13 @@ function(create_test)
     endif()
 
     add_library(${name} OBJECT ${sources} ${EXCLUDE_FROM_ALL})
-    target_link_dependencies(${name} PUBLIC ${dependencies} gtest)
+    target_link_dependencies(${name} PUBLIC ${dependencies} gtest gmock)
 
     set(${CMAKE_PROJECT_NAME}_all_tests "${${CMAKE_PROJECT_NAME}_all_tests};${name}" CACHE STRING "" FORCE)
 
     if(NOT ARGS_NO_EXE)
         add_executable(run_${name} "" ${EXCLUDE_FROM_ALL})
-        target_link_dependencies(run_${name} ${name} gtest_main)
+        target_link_dependencies(run_${name} ${name} gmock_main)
         add_test(NAME ${name} COMMAND run_${name})
     endif()
 endfunction()
@@ -118,6 +119,6 @@ function(create_test_suite name)
     set(tests_in_suite ${ARGS_UNPARSED_ARGUMENTS} CACHE STRING "" FORCE)
 
     add_executable(${name} "" ${EXCLUDE_FROM_ALL})
-    target_link_dependencies(${name} PUBLIC ${tests_in_suite} PRIVATE gtest_main)
+    target_link_dependencies(${name} PUBLIC ${tests_in_suite} PRIVATE gmock_main)
     add_test(NAME ${name} COMMAND ${name})
 endfunction()

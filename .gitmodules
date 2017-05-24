@@ -1,6 +1,6 @@
 [submodule "external/DownloadProject"]
 	path = external/DownloadProject
-	url = https://github.com/tschuchortdev/DownloadProject
+	url = https://github.com/Crascit/DownloadProject
 [submodule "external/cmake_utils"]
 	path = external/cmake_utils
 	url = https://github.com/tschuchortdev/cmake_utils
