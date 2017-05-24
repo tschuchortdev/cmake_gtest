@@ -6,7 +6,15 @@ CMake module to automatically add and configure GTest
 
 ## Installation:
 
-add this repo as a submodule (don't forget to initialize subsubmodules) and include `GTest.cmake` in your top-level `CMakeLists.txt` file
+1. add this repo as a submodule (you must already be in a git repository to do this) and don't forget to initialize the submodules recursively:
+
+    `git submodule add https://github.com/tschuchortdev/cmake_gtest external/gtest`
+    
+    `git submodule update --init --recursive`
+
+2. include `GTest.cmake` in your top-level `CMakeLists.txt` file:
+
+    `include(external/gtest/GTest.cmake)`
 
 ## Usage:
 
