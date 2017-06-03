@@ -9,17 +9,13 @@ include(CTest)
 include(Utils)
 enable_testing()
 
-if(NOT gtest_already_downloaded)
-    download_project(
-            PROJ            googletest
-            GIT_REPOSITORY  https://github.com/google/googletest.git
-            GIT_TAG         42bc671
-            TIMEOUT         10
-            ${UPDATE_DISCONNECTED_IF_AVAILABLE}
-    )
 
-    set(gtest_already_downloaded TRUE CACHE STRING "" FORCE)
-endif()
+download_project(
+        PROJ            googletest
+        GIT_REPOSITORY  https://github.com/google/googletest.git
+        GIT_TAG         42bc671
+        TIMEOUT         10
+        ${UPDATE_DISCONNECTED_IF_AVAILABLE})
 
 if(MINGW)
     # https://github.com/google/googletest/issues/920
