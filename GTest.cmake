@@ -9,6 +9,11 @@ include(CTest)
 include(Utils)
 enable_testing()
 
+if (CMAKE_VERSION VERSION_LESS 3.2)
+    set(UPDATE_DISCONNECTED_IF_AVAILABLE "")
+else()
+    set(UPDATE_DISCONNECTED_IF_AVAILABLE "UPDATE_DISCONNECTED 1")
+endif()
 
 download_project(
         PROJ            googletest
