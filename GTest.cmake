@@ -18,8 +18,8 @@ download_project(
         ${UPDATE_DISCONNECTED_IF_AVAILABLE})
 
 if(MINGW)
-    # https://github.com/google/googletest/issues/920
-    add_definitions("-D_EMULATE_GLIBC=0")
+    add_definitions("-D_EMULATE_GLIBC=0") # https://github.com/google/googletest/issues/920
+    add_definitions("-DWINVER=0x0500") # https://github.com/google/googletest/issues/893
 endif()
 
 # Prevent GoogleTest from overriding our compiler/linker options
