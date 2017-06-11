@@ -58,10 +58,18 @@ endif()
 # those that are dependencies of our own targets
 add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR} EXCLUDE_FROM_ALL)
 
-
 # in all CMake versions befor 2.8.11, header depencencies have to be added manually
 if (CMAKE_VERSION VERSION_LESS 2.8.11)
     include_directories("${gtest_SOURCE_DIR}/include" "${gmock_SOURCE_DIR}/include")
+endif()
+
+if(MINGW)
+    # fixes gmock error when compiling with -std=c++11 on MinGW)
+    # alternatively, one could activate CXX_EXTENSIONS
+    target_compile_options(gtest PUBLIC "-U __STRICT_ANSI__")
+    target_compile_options(gmock PUBLIC "-U __STRICT_ANSI__")
+    target_compile_options(gtest_main PUBLIC "-U __STRICT_ANSI__")
+    target_compile_options(gmock_main PUBLIC "-U __STRICT_ANSI__")
 endif()
 
 function(create_test)
