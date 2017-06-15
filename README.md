@@ -24,6 +24,7 @@ Use this function to create a test target. The target may include as many GTest 
 
 Options:
   - `NO_EXE`: do not create an executable for this test
+  - `NO_MAIN`: do not link gtest_main. Use this option if you want to use your own main function to run the tests (Although this should never be necessary. Use test fixtures instead!)
   - `EXCLUDE_FROM_ALL`: exclude this target from target "all"
   
 Arguments:

@@ -75,7 +75,7 @@ endif()
 function(create_test)
     cmake_parse_arguments(
             ARGS                                        # prefix of output variables
-            "NO_EXE;EXCLUDE_FROM_ALL"  # list of names of the boolean arguments (only defined ones will be true)
+            "NO_EXE;NO_MAIN;EXCLUDE_FROM_ALL"  # list of names of the boolean arguments (only defined ones will be true)
             ""                                          # list of names of mono-valued arguments
             "SOURCES;DEPENDS"                           # list of names of multi-valued arguments (output variables are lists)
             ${ARGN}                                     # arguments of the function to parse, here we take the all original ones
@@ -107,7 +107,13 @@ function(create_test)
 
     if(NOT ARGS_NO_EXE)
         add_executable(run_${name} "" ${EXCLUDE_FROM_ALL})
-        target_link_dependencies(run_${name} ${name} gmock_main)
+
+        if(ARGS_NO_MAIN)
+            target_link_dependencies(run_${name} ${name})
+        else()
+            target_link_dependencies(run_${name} ${name} gmock_main)
+        endif()
+
         add_test(NAME ${name} COMMAND run_${name})
     endif()
 endfunction()
