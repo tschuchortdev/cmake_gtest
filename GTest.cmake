@@ -49,8 +49,7 @@ if(MSVC)
     # VS2012 doesn't support variadic templates, so we have to tell gtest not to use them
     if(compiler_is_vs2012)
         message(STATUS "VS2012 (toolset v110) detected. Disabling variadic templates in gtest")
-        #add_definitions("/D GTEST_HAS_TR1_TUPLE=0")
-        add_definitions("/D _VARIADIC_MAX=10")
+        add_definitions("-D_VARIADIC_MAX=10")
     endif()
 endif()
 
