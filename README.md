@@ -25,6 +25,7 @@ Use this function to create a test target. The target may include as many GTest 
 Options:
   - `NO_EXE`: do not create an executable for this test
   - `NO_MAIN`: do not link gtest_main. Use this option if you want to use your own main function to run the tests (Although this should never be necessary. Use test fixtures instead!)
+  - `NO_GMOCK`: do not link gmock
   - `EXCLUDE_FROM_ALL`: exclude this target from target "all"
   
 Arguments:
@@ -46,6 +47,7 @@ Example:
 Use this function to create a test suite target from several test targets. It is even possible to combine other test suite targets into a new test suite, much like you can combine regular library targets in CMake.
 
 Options:
+  - `NO_GMOCK`: do not link gmock
   - `EXCLUDE_FROM_ALL`: exclude this target from target "all"
 
 Arguments:

@@ -49,9 +49,9 @@ if(MSVC)
     # VS2012 doesn't support variadic templates, so we have to tell gtest not to use them
     if(compiler_is_vs2012)
         message(STATUS "VS2012 (toolset v110) detected. Disabling variadic templates in gtest")
-        add_definitions("-DGTEST_HAS_TR1_TUPLE=0")
+        #add_definitions("/D GTEST_HAS_TR1_TUPLE=0")
+        add_definitions("/D _VARIADIC_MAX=10")
     endif()
-
 endif()
 
 # add gtest so we can use it's targets. EXCLUDE_FROM_ALL hides targets, except
@@ -75,7 +75,7 @@ endif()
 function(create_test)
     cmake_parse_arguments(
             ARGS                                        # prefix of output variables
-            "NO_EXE;NO_MAIN;EXCLUDE_FROM_ALL"  # list of names of the boolean arguments (only defined ones will be true)
+            "NO_EXE;NO_MAIN;NO_GMOCK;EXCLUDE_FROM_ALL"  # list of names of the boolean arguments (only defined ones will be true)
             ""                                          # list of names of mono-valued arguments
             "SOURCES;DEPENDS"                           # list of names of multi-valued arguments (output variables are lists)
             ${ARGN}                                     # arguments of the function to parse, here we take the all original ones
@@ -101,7 +101,12 @@ function(create_test)
     endif()
 
     add_library(${name} OBJECT ${sources} ${EXCLUDE_FROM_ALL})
-    target_link_dependencies(${name} PUBLIC ${dependencies} gtest gmock)
+
+    if(ARGS_NO_GMOCK)
+        target_link_dependencies(${name} PUBLIC ${dependencies} gtest)
+    else()
+        target_link_dependencies(${name} PUBLIC ${dependencies} gtest gmock)
+    endif()
 
     set(${CMAKE_PROJECT_NAME}_all_tests "${${CMAKE_PROJECT_NAME}_all_tests};${name}" CACHE STRING "" FORCE)
 
@@ -110,6 +115,8 @@ function(create_test)
 
         if(ARGS_NO_MAIN)
             target_link_dependencies(run_${name} ${name})
+        elseif(ARGS_NO_GMOCK)
+            target_link_dependencies(run_${name} ${name} gtest_main)
         else()
             target_link_dependencies(run_${name} ${name} gmock_main)
         endif()
@@ -121,7 +128,7 @@ endfunction()
 function(create_test_suite name)
     cmake_parse_arguments(
             ARGS                                        # prefix of output variables
-            "EXCLUDE_FROM_ALL"  # list of names of the boolean arguments (only defined ones will be true)
+            "NO_GMOCK;EXCLUDE_FROM_ALL"  # list of names of the boolean arguments (only defined ones will be true)
             ""                                          # list of names of mono-valued arguments
             ""                           # list of names of multi-valued arguments (output variables are lists)
             ${ARGN}                                     # arguments of the function to parse, here we take the all original ones
@@ -134,6 +141,12 @@ function(create_test_suite name)
     set(tests_in_suite ${ARGS_UNPARSED_ARGUMENTS} CACHE STRING "" FORCE)
 
     add_executable(${name} "" ${EXCLUDE_FROM_ALL})
-    target_link_dependencies(${name} PUBLIC ${tests_in_suite} PRIVATE gmock_main)
+
+    if(ARGS_NO_GMOCK)
+        target_link_dependencies(${name} PUBLIC ${tests_in_suite} PRIVATE gtest_main)
+    else()
+        target_link_dependencies(${name} PUBLIC ${tests_in_suite} PRIVATE gmock_main)
+    endif()
+
     add_test(NAME ${name} COMMAND ${name})
 endfunction()
