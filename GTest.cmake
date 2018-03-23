@@ -33,6 +33,9 @@ if(MSVC)
     message(STATUS "MSVC detected, setting gtest_force_shared_crt")
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
+    # https://github.com/google/googletest/issues/1373
+    add_definitions("-D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING")
+
     if(CMAKE_VERSION VERSION_GREATER 2.8.11)
         if(CMAKE_CXX_COMPILER_VERSION MATCHES 17.*)
             set(compiler_is_vs2012 TRUE)
